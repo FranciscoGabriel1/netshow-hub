@@ -1,5 +1,4 @@
 import { httpClient } from '@/services/httpClient';
-import type { Video } from './types';
 
 export const fetchVideos = async (page = 1, limit = 10) => {
   const res = await httpClient.get('/videos', {

@@ -1,6 +1,7 @@
 'use client';
 
 import { Card, CardContent, Typography, Box, Chip, useTheme } from '@mui/material';
+import Image from 'next/image';
 
 interface VideoCardProps {
   id: string;
@@ -23,15 +24,15 @@ export const VideoCard: React.FC<VideoCardProps> = ({
   const chipSx =
     chip?.variant === 'ao-vivo'
       ? {
-          bgcolor: theme.palette.error.main,
-          color: theme.palette.common.white,
-          fontWeight: 500,
-        }
+        bgcolor: theme.palette.error.main,
+        color: theme.palette.common.white,
+        fontWeight: 500,
+      }
       : {
-          bgcolor: theme.palette.grey[800],
-          color: theme.palette.grey[300],
-          fontWeight: 500,
-        };
+        bgcolor: theme.palette.grey[800],
+        color: theme.palette.grey[300],
+        fontWeight: 500,
+      };
 
   return (
     <Card
@@ -49,16 +50,15 @@ export const VideoCard: React.FC<VideoCardProps> = ({
       onClick={onClick}
     >
       <Box sx={{ position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
-        <img
+        <Image
           src={thumbnail}
           alt={title}
+          fill
           style={{
-            width: '100%',
-            height: '100%',
             objectFit: 'cover',
-            display: 'block',
             filter: 'brightness(0.92)',
           }}
+          sizes="(max-width: 600px) 100vw, 320px"
         />
         <Box
           sx={{
