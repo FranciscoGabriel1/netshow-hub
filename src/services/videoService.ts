@@ -73,24 +73,39 @@ export async function incrementViews(
 }
 
 
-export async function toggleLike(
-    id: string
+export async function addLike(
+  id: string
 ): Promise<{ data: Video | null; error: string | null }> {
-    const current = await getVideoById(id);
-    if (current.error || !current.data) {
-        return { data: null, error: current.error || 'Vídeo não encontrado' };
-    }
+  const current = await getVideoById(id);
+  if (current.error || !current.data) {
+    return { data: null, error: current.error || 'Vídeo não encontrado' };
+  }
+  const updatedResp: HttpResponse<Video> = await httpClient.patch<Video, Partial<Video>>(
+    `/videos/${id}`,
+    { likes: current.data.likes + 1 }
+  );
+  if (updatedResp.error) {
+    return { data: null, error: updatedResp.error };
+  }
+  return { data: updatedResp.data, error: null };
+}
 
-    const updatedResp: HttpResponse<Video> = await httpClient.patch<Video, Partial<Video>>(
-        `/videos/${id}`,
-        { likes: current.data.likes + 1 }
-    );
-
-    if (updatedResp.error || updatedResp.data === null) {
-        return { data: null, error: updatedResp.error || 'Falha ao atualizar likes' };
-    }
-
-    return { data: updatedResp.data, error: null };
+export async function removeLike(
+  id: string
+): Promise<{ data: Video | null; error: string | null }> {
+  const current = await getVideoById(id);
+  if (current.error || !current.data) {
+    return { data: null, error: current.error || 'Vídeo não encontrado' };
+  }
+  const newLikes = Math.max(0, current.data.likes - 1);
+  const updatedResp: HttpResponse<Video> = await httpClient.patch<Video, Partial<Video>>(
+    `/videos/${id}`,
+    { likes: newLikes }
+  );
+  if (updatedResp.error) {
+    return { data: null, error: updatedResp.error };
+  }
+  return { data: updatedResp.data, error: null };
 }
 
 export async function getAllCategories(): Promise<{ data: Category[]; error: string | null }> {

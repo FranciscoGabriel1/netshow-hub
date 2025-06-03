@@ -1,6 +1,4 @@
 'use client';
-
-import React, { useState } from 'react';
 import {
   Container,
   Box,
@@ -54,15 +52,14 @@ export default function HomePage() {
               ) : (
                 <Grid container spacing={2}>
                   {listDeVideos.map((video) => (
-                    <Grid 
-                      item 
-                      xs={12} 
-                      sm={6} 
-                      md={4} 
-                      lg={3} 
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={4}
+                      lg={3}
                       key={video.id}
                     >
-                      {/* O VideoCard já faz `router.push("/videos/" + id)` ao clicar */}
                       <VideoCard
                         id={video.id}
                         title={video.title}
