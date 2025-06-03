@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAllVideos, Video } from '@/services/videoService'; 
+import { getAllVideos, Video } from '@/services/videoService';
 
 export interface UseVideosResult {
   data: Video[];
@@ -12,7 +12,7 @@ export function useVideos(
   page: number = 1,
   perPage: number = 10
 ): UseVideosResult {
-  const [data, setData] = useState<Video[]>([]);   
+  const [data, setData] = useState<Video[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,11 +37,12 @@ export function useVideos(
           setData(videosOrNull);
           setTotal(count);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (!isMounted) return;
         setData([]);
         setTotal(0);
-        setError(err.message || 'Erro ao carregar vídeos');
+        const errMsg = err instanceof Error ? err.message : 'Erro ao carregar vídeos';
+        setError(errMsg);
       } finally {
         if (isMounted) setLoading(false);
       }

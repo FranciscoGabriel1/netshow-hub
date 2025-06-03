@@ -2,26 +2,32 @@ import { getVideoById } from '@/services/videoService';
 import type { Metadata } from 'next';
 import ClientVideoDetail from './ClientVideoDetail';
 
-interface Params {
-  params: { id: string };
-}
-
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const { id } = params;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
   const { data: vid } = await getVideoById(id);
+
   if (!vid) {
     return {
       title: 'Vídeo não encontrado',
     };
   }
+
   return {
     title: vid.title,
     description: vid.description || '',
   };
 }
 
-export default async function VideoDetailServer({ params }: Params) {
-  const { id } = params;
+export default async function VideoDetailServer({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   const { data: vid, error } = await getVideoById(id);
 
   if (error || !vid) {

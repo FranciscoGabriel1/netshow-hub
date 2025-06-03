@@ -1,9 +1,17 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
 
 export interface HttpResponse<T> {
   data: T | null;
   error: string | null;
   status: number;
+}
+interface ResponseWithMessage {
+  message?: string;
 }
 
 export class HttpClient {
@@ -18,7 +26,10 @@ export class HttpClient {
     });
   }
 
-  public async get<T>(url: string, config?: AxiosRequestConfig): Promise<HttpResponse<T>> {
+  public async get<T>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<HttpResponse<T>> {
     try {
       const response: AxiosResponse<T> = await this.client.get<T>(url, config);
       return {
@@ -26,13 +37,39 @@ export class HttpClient {
         error: null,
         status: response.status,
       };
-    } catch (err: any) {
-      const message =
-        err.response?.data?.message ||
-        err.response?.statusText ||
-        err.message ||
-        'Erro desconhecido';
-      const status = err.response?.status || 500;
+    } catch (err: unknown) {
+      let message = 'Erro desconhecido';
+      let status = 500;
+
+      if (axios.isAxiosError(err)) {
+        const axiosErr = err as AxiosError<unknown> & {
+          response?: { data?: unknown; statusText?: string; status?: number };
+        };
+        if (
+          typeof axiosErr.response?.data === 'object' &&
+          axiosErr.response.data !== null
+        ) {
+          const dataObj = axiosErr.response.data as ResponseWithMessage;
+          if (typeof dataObj.message === 'string') {
+            message = dataObj.message;
+          } else if (axiosErr.response?.statusText) {
+            message = axiosErr.response.statusText;
+          } else if (axiosErr.message) {
+            message = axiosErr.message;
+          }
+        } else if (axiosErr.response?.statusText) {
+          message = axiosErr.response.statusText;
+        } else if (axiosErr.message) {
+          message = axiosErr.message;
+        }
+
+        if (typeof axiosErr.response?.status === 'number') {
+          status = axiosErr.response.status;
+        }
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+
       return { data: null, error: message, status };
     }
   }
@@ -43,15 +80,46 @@ export class HttpClient {
     config?: AxiosRequestConfig
   ): Promise<HttpResponse<T>> {
     try {
-      const response: AxiosResponse<T> = await this.client.post<T>(url, body, config);
+      const response: AxiosResponse<T> = await this.client.post<T>(
+        url,
+        body,
+        config
+      );
       return { data: response.data, error: null, status: response.status };
-    } catch (err: any) {
-      const message =
-        err.response?.data?.message ||
-        err.response?.statusText ||
-        err.message ||
-        'Erro desconhecido';
-      const status = err.response?.status || 500;
+    } catch (err: unknown) {
+      let message = 'Erro desconhecido';
+      let status = 500;
+
+      if (axios.isAxiosError(err)) {
+        const axiosErr = err as AxiosError<unknown> & {
+          response?: { data?: unknown; statusText?: string; status?: number };
+        };
+
+        if (
+          typeof axiosErr.response?.data === 'object' &&
+          axiosErr.response.data !== null
+        ) {
+          const dataObj = axiosErr.response.data as ResponseWithMessage;
+          if (typeof dataObj.message === 'string') {
+            message = dataObj.message;
+          } else if (axiosErr.response?.statusText) {
+            message = axiosErr.response.statusText;
+          } else if (axiosErr.message) {
+            message = axiosErr.message;
+          }
+        } else if (axiosErr.response?.statusText) {
+          message = axiosErr.response.statusText;
+        } else if (axiosErr.message) {
+          message = axiosErr.message;
+        }
+
+        if (typeof axiosErr.response?.status === 'number') {
+          status = axiosErr.response.status;
+        }
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+
       return { data: null, error: message, status };
     }
   }
@@ -62,30 +130,94 @@ export class HttpClient {
     config?: AxiosRequestConfig
   ): Promise<HttpResponse<T>> {
     try {
-      const response: AxiosResponse<T> = await this.client.patch<T>(url, body, config);
+      const response: AxiosResponse<T> = await this.client.patch<T>(
+        url,
+        body,
+        config
+      );
       return { data: response.data, error: null, status: response.status };
-    } catch (err: any) {
-      const message =
-        err.response?.data?.message ||
-        err.response?.statusText ||
-        err.message ||
-        'Erro desconhecido';
-      const status = err.response?.status || 500;
+    } catch (err: unknown) {
+      let message = 'Erro desconhecido';
+      let status = 500;
+
+      if (axios.isAxiosError(err)) {
+        const axiosErr = err as AxiosError<unknown> & {
+          response?: { data?: unknown; statusText?: string; status?: number };
+        };
+
+        if (
+          typeof axiosErr.response?.data === 'object' &&
+          axiosErr.response.data !== null
+        ) {
+          const dataObj = axiosErr.response.data as ResponseWithMessage;
+          if (typeof dataObj.message === 'string') {
+            message = dataObj.message;
+          } else if (axiosErr.response?.statusText) {
+            message = axiosErr.response.statusText;
+          } else if (axiosErr.message) {
+            message = axiosErr.message;
+          }
+        } else if (axiosErr.response?.statusText) {
+          message = axiosErr.response.statusText;
+        } else if (axiosErr.message) {
+          message = axiosErr.message;
+        }
+
+        if (typeof axiosErr.response?.status === 'number') {
+          status = axiosErr.response.status;
+        }
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+
       return { data: null, error: message, status };
     }
   }
 
-  public async delete<T>(url: string, config?: AxiosRequestConfig): Promise<HttpResponse<T>> {
+  public async delete<T>(
+    url: string,
+    config?: AxiosRequestConfig
+  ): Promise<HttpResponse<T>> {
     try {
-      const response: AxiosResponse<T> = await this.client.delete<T>(url, config);
+      const response: AxiosResponse<T> = await this.client.delete<T>(
+        url,
+        config
+      );
       return { data: response.data, error: null, status: response.status };
-    } catch (err: any) {
-      const message =
-        err.response?.data?.message ||
-        err.response?.statusText ||
-        err.message ||
-        'Erro desconhecido';
-      const status = err.response?.status || 500;
+    } catch (err: unknown) {
+      let message = 'Erro desconhecido';
+      let status = 500;
+
+      if (axios.isAxiosError(err)) {
+        const axiosErr = err as AxiosError<unknown> & {
+          response?: { data?: unknown; statusText?: string; status?: number };
+        };
+
+        if (
+          typeof axiosErr.response?.data === 'object' &&
+          axiosErr.response.data !== null
+        ) {
+          const dataObj = axiosErr.response.data as ResponseWithMessage;
+          if (typeof dataObj.message === 'string') {
+            message = dataObj.message;
+          } else if (axiosErr.response?.statusText) {
+            message = axiosErr.response.statusText;
+          } else if (axiosErr.message) {
+            message = axiosErr.message;
+          }
+        } else if (axiosErr.response?.statusText) {
+          message = axiosErr.response.statusText;
+        } else if (axiosErr.message) {
+          message = axiosErr.message;
+        }
+
+        if (typeof axiosErr.response?.status === 'number') {
+          status = axiosErr.response.status;
+        }
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+
       return { data: null, error: message, status };
     }
   }
