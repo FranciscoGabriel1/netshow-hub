@@ -15,12 +15,12 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { useTheme } from '@mui/material/styles';
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useHeaderStyles } from './styles';
 import { menus } from '@/app/shared/mocks/header';
 
-export function Header() {
+export const Header = (): JSX.Element => {
   const classes = useHeaderStyles();
   const theme = useTheme();
 
