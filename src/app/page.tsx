@@ -1,46 +1,81 @@
 'use client';
 
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
-import { useVideos } from '@/features/videos/hooks/useVideos';
+import React, { useState } from 'react';
+import {
+  Container,
+  Box,
+  Typography,
+  CircularProgress,
+  Grid,
+} from '@mui/material';
+import { useVideosByCategory } from '@/features/videos/hooks/useVideosByCategory';
 import { VideoCard } from '@/components/VideoCard';
-import { Grid, Pagination } from '@mui/material';
-import { useState } from 'react';
-import BannerHeroSlider from '@/components/BannerHeroSlider';
+import { useCategories } from '@/features/videos/hooks/useCategories';
 
-const PER_PAGE = 10;
+export default function HomePage() {
+  const { data: categories, loading: loadingCats, error: errorCats } = useCategories();
+  const { data: videosGrouped, loading: loadingVids, error: errorVids } =
+    useVideosByCategory(categories);
 
-const HomePage = () => {
-  const [page, setPage] = useState(1);
-  const { data, loading, total } = useVideos(page, PER_PAGE);
+  const loading = loadingCats || loadingVids;
+  const error = errorCats || errorVids;
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 } }}>
-       <BannerHeroSlider />
-      <Typography variant="h5" component="h1" gutterBottom>
-        Continuar reprodução
+    <Container sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" gutterBottom>
+        Vídeos por Categoria
       </Typography>
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <>
-          <Grid container spacing={2}>
-            {data.map((video, idx) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={`${video.id}-${idx}`}>
-                <VideoCard id={video.id} title={video.title} thumbnail={video.thumbnail} />
-              </Grid>
-            ))}
-          </Grid>
-          <Pagination
-            count={Math.ceil(total / PER_PAGE)}
-            page={page}
-            onChange={(e, value) => setPage(value)}
-          />
-        </>
-      )}
-    </Box>
-  );
-};
 
-export default HomePage;
+      {loading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <CircularProgress />
+        </Box>
+      )}
+
+      {!loading && error && (
+        <Typography variant="h6" color="error" sx={{ mt: 2, textAlign: 'center' }}>
+          {error}
+        </Typography>
+      )}
+
+      {!loading &&
+        !error &&
+        categories.map((cat) => {
+          const listDeVideos = videosGrouped[cat.id] || [];
+
+          return (
+            <Box key={cat.id} sx={{ mb: 4 }}>
+              <Typography variant="h5" sx={{ mb: 2 }}>
+                {cat.title}
+              </Typography>
+
+              {listDeVideos.length === 0 ? (
+                <Typography color="text.secondary">Sem vídeos nesta categoria.</Typography>
+              ) : (
+                <Grid container spacing={2}>
+                  {listDeVideos.map((video) => (
+                    <Grid 
+                      item 
+                      xs={12} 
+                      sm={6} 
+                      md={4} 
+                      lg={3} 
+                      key={video.id}
+                    >
+                      {/* O VideoCard já faz `router.push("/videos/" + id)` ao clicar */}
+                      <VideoCard
+                        id={video.id}
+                        title={video.title}
+                        thumbnail={video.thumbnail}
+                        category={cat.title}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
+            </Box>
+          );
+        })}
+    </Container>
+  );
+}

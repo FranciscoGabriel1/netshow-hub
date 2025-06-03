@@ -1,6 +1,15 @@
-'use client';
+'use client'; 
 
-import { Card, CardContent, Typography, Box, Chip, useTheme } from '@mui/material';
+import React from 'react';
+import { useRouter } from 'next/navigation'; 
+import {
+  Card,
+  CardContent,
+  Typography,
+  Box,
+  Chip,
+  useTheme,
+} from '@mui/material';
 import Image from 'next/image';
 
 interface VideoCardProps {
@@ -9,47 +18,55 @@ interface VideoCardProps {
   thumbnail: string;
   category?: string;
   chip?: { label: string; variant: 'ao-vivo' | 'em-breve' };
-  onClick?: () => void;
 }
 
-export const VideoCard: React.FC<VideoCardProps> = ({
-  title,
-  thumbnail,
-  category,
-  chip,
-  onClick,
-}) => {
+export function VideoCard({ id, title, thumbnail, category, chip }: VideoCardProps) {
   const theme = useTheme();
+  const router = useRouter(); 
+
+  const handleClick = () => {
+    router.push(`/videos/${id}`);
+  };
 
   const chipSx =
     chip?.variant === 'ao-vivo'
       ? {
-        bgcolor: theme.palette.error.main,
-        color: theme.palette.common.white,
-        fontWeight: 500,
-      }
+          bgcolor: theme.palette.error.main,
+          color: theme.palette.common.white,
+          fontWeight: 500,
+        }
       : {
-        bgcolor: theme.palette.grey[800],
-        color: theme.palette.grey[300],
-        fontWeight: 500,
-      };
+          bgcolor: theme.palette.grey[800],
+          color: theme.palette.grey[300],
+          fontWeight: 500,
+        };
 
   return (
     <Card
+      onClick={handleClick}
       sx={{
         width: 320,
         bgcolor: theme.palette.background.paper,
         borderRadius: 3,
-        boxShadow: '0 2px 8px 0 rgba(0,0,0,0.16)',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.16)',
         cursor: 'pointer',
         overflow: 'hidden',
-        '&:hover': { boxShadow: '0 4px 16px 0 rgba(0,0,0,0.28)' },
         display: 'flex',
         flexDirection: 'column',
+        transition: 'box-shadow 0.2s ease',
+        '&:hover': {
+          boxShadow: '0 4px 16px rgba(0,0,0,0.28)',
+        },
       }}
-      onClick={onClick}
     >
-      <Box sx={{ position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden' }}>
+      <Box
+        sx={{
+          position: 'relative',
+          width: '100%',
+          aspectRatio: '16/9',
+          overflow: 'hidden',
+        }}
+      >
         <Image
           src={thumbnail}
           alt={title}
@@ -64,7 +81,8 @@ export const VideoCard: React.FC<VideoCardProps> = ({
           sx={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(0,0,0,0.44) 64%, rgba(0,0,0,0.95) 100%)',
+            background:
+              'linear-gradient(180deg, rgba(0,0,0,0.44) 64%, rgba(0,0,0,0.95) 100%)',
           }}
         />
         {chip && (
@@ -86,6 +104,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({
           />
         )}
       </Box>
+
       <CardContent
         sx={{
           p: 2,
@@ -128,4 +147,4 @@ export const VideoCard: React.FC<VideoCardProps> = ({
       </CardContent>
     </Card>
   );
-};
+}
