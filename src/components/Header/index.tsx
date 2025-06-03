@@ -14,16 +14,13 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { useTheme } from '@mui/material/styles';
-import { JSX, useState } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { useHeaderStyles } from './styles';
+import { useTheme } from '@mui/material/styles';
+import { useState } from 'react';
 import { menus } from '@/app/shared/mocks/header';
 
-export const Header = (): JSX.Element => {
-  const classes = useHeaderStyles();
+export const Header = () => {
   const theme = useTheme();
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openMenuIdx, setOpenMenuIdx] = useState<number | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -45,28 +42,68 @@ export const Header = (): JSX.Element => {
   };
 
   return (
-    <Box className={classes.headerWrapper}>
-      <AppBar position="static" className={classes.appBar}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton edge="start" color="inherit" className={classes.hamburger} onClick={handleDrawer(true)}>
+    <Box sx={{ width: '100%', backgroundColor: 'background.default', borderBottom: 1, borderColor: 'divider' }}>
+      <AppBar
+        position="static"
+        elevation={0}
+        sx={{
+          backgroundColor: 'background.default',
+          boxShadow: 'none',
+        }}
+      >
+        <Toolbar
+          sx={{
+            minHeight: { xs: 56, md: 80 },
+            px: { md: 6 },
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <IconButton
+            edge="start"
+            color="inherit"
+            sx={{
+              display: { md: 'none' },
+              mr: 1,
+            }}
+            onClick={handleDrawer(true)}
+          >
             <MenuIcon />
           </IconButton>
-          <Box className={classes.logoBox}>
-            <Box className={classes.logoIcon} />
-            <Typography variant="h6" fontWeight={700} color={theme.palette.common.white}>
+          <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 140, mr: 3 }}>
+            <Box
+              sx={{
+                width: 28,
+                height: 28,
+                background: theme.palette.common.white,
+                borderRadius: 1,
+                mr: 1,
+              }}
+            />
+            <Typography variant="h6" fontWeight={700} color="common.white">
               Logo
             </Typography>
           </Box>
-          <Box className={classes.menuContainer}>
-            <Box className={classes.menuBox}>
+          <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2 }}>
               {menus.map((menu, idx) => (
                 menu.submenu ? (
-                  <Box key={menu.label} className={classes.menuItemBox}>
+                  <Box key={menu.label} sx={{ display: 'flex', alignItems: 'center' }}>
                     <Button
                       color="inherit"
                       onClick={e => handleMenuOpen(e, idx)}
-                      className={classes.menuButton}
-                      endIcon={<KeyboardArrowDownIcon className={classes.arrowIcon} />}
+                      sx={{
+                        textTransform: 'none',
+                        fontSize: 16,
+                        fontWeight: 400,
+                        color: 'common.white',
+                        pl: 2,
+                        pr: 2,
+                      }}
+                      endIcon={
+                        <KeyboardArrowDownIcon sx={{ fontSize: 20, color: 'common.white' }} />
+                      }
                     >
                       {menu.label}
                     </Button>
@@ -76,11 +113,17 @@ export const Header = (): JSX.Element => {
                       onClose={handleMenuClose}
                       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
                       transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-                      MenuListProps={{ className: classes.menuList }}
+                      MenuListProps={{
+                        sx: { background: 'background.paper' },
+                      }}
                       disableScrollLock
                     >
                       {menu.submenu.map(item => (
-                        <MenuItem key={item} onClick={handleMenuClose} className={classes.menuListItem}>
+                        <MenuItem
+                          key={item}
+                          onClick={handleMenuClose}
+                          sx={{ color: 'text.primary' }}
+                        >
                           {item}
                         </MenuItem>
                       ))}
@@ -90,7 +133,14 @@ export const Header = (): JSX.Element => {
                   <Button
                     key={menu.label}
                     color="inherit"
-                    className={classes.menuButton}
+                    sx={{
+                      textTransform: 'none',
+                      fontSize: 16,
+                      fontWeight: 400,
+                      color: 'common.white',
+                      pl: 2,
+                      pr: 2,
+                    }}
                   >
                     {menu.label}
                   </Button>
@@ -98,12 +148,12 @@ export const Header = (): JSX.Element => {
               ))}
             </Box>
           </Box>
-          <Box className={classes.rightIcons}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 80, justifyContent: 'flex-end' }}>
             <IconButton color="inherit">
-              <SearchIcon className={classes.iconWhite} />
+              <SearchIcon sx={{ color: 'common.white' }} />
             </IconButton>
             <IconButton color="inherit">
-              <AccountCircleIcon className={classes.iconWhite} />
+              <AccountCircleIcon sx={{ color: 'common.white' }} />
             </IconButton>
           </Box>
         </Toolbar>
@@ -111,11 +161,25 @@ export const Header = (): JSX.Element => {
           anchor="left"
           open={drawerOpen}
           onClose={handleDrawer(false)}
-          classes={{ paper: classes.drawerPaper }}
+          PaperProps={{
+            sx: {
+              width: 260,
+              background: 'background.default',
+              color: 'text.primary',
+            },
+          }}
         >
-          <Box className={classes.drawerLogo}>
-            <Box className={classes.logoIcon} />
-            <Typography variant="h6" fontWeight={700} color={theme.palette.common.white}>
+          <Box sx={{ display: 'flex', alignItems: 'center', p: 2, pb: 0 }}>
+            <Box
+              sx={{
+                width: 28,
+                height: 28,
+                background: theme.palette.common.white,
+                borderRadius: 1,
+                mr: 1,
+              }}
+            />
+            <Typography variant="h6" fontWeight={700} color="common.white">
               Logo
             </Typography>
           </Box>
@@ -131,10 +195,11 @@ export const Header = (): JSX.Element => {
                     <ListItemText primary={menu.label} primaryTypographyProps={{ fontSize: 16, color: theme.palette.common.white }} />
                     {menu.submenu && (
                       <KeyboardArrowDownIcon
-                        className={classes.arrowIcon}
-                        style={{
-                          transform: mobileSubmenuIdx === idx ? "rotate(180deg)" : "none",
-                          transition: "transform 0.2s"
+                        sx={{
+                          fontSize: 20,
+                          color: 'common.white',
+                          transform: mobileSubmenuIdx === idx ? 'rotate(180deg)' : 'none',
+                          transition: 'transform 0.2s',
                         }}
                       />
                     )}
@@ -158,4 +223,4 @@ export const Header = (): JSX.Element => {
       </AppBar>
     </Box>
   );
-}
+};
