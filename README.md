@@ -150,7 +150,6 @@ export const httpClient = new HttpClient('http://localhost:3000');
 - `npm run build` (or `pnpm build`): Build Next.js for production.  
 - `npm run start` (or `pnpm start`): Start Next.js production server on port 3002.  
 - `npm run lint` (or `pnpm lint`): Run ESLint and type-check.  
-- `npm run test` (or `pnpm test`): Run Jest unit tests.
 
 ## Testing
 
@@ -158,16 +157,6 @@ export const httpClient = new HttpClient('http://localhost:3000');
 - Hooks: `useVideos`, `useCategories`, `useSnackbar`.  
 - Services: `videoService` (mocking `httpClient`).  
 - Components: `VideoCard`, `ClientVideoDetail`.  
-
-```bash
-npm run test
-```
-
-Or with pnpm:
-
-```bash
-pnpm test
-```
 
 ## Contribution
 
