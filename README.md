@@ -1,36 +1,181 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Netshow Hub
 
-## Getting Started
+Netshow Hub is a video listing and playback application built with Next.js 15 (App Router), React, and Material UI. It consumes data from a simulated JSON REST API (`json-server`) to display paginated video lists, group by categories, and show detailed video pages with an HLS player, view/like counters, and share functionality.
 
-First, run the development server:
+Repository: https://github.com/FranciscoGabriel1/netshow-hub.git
+
+## Tech Stack
+
+- Next.js 15 (App Router)  
+- React 18+  
+- TypeScript  
+- Material UI v5 (MUI)  
+- Emotion (styling engine for MUI)  
+- Axios (HTTP client wrapper)  
+- json-server (mock REST API)  
+
+## Prerequisites
+
+- Node.js ≥ 18.x  
+- npm ≥ 9.x or pnpm ≥ 8.x  
+- Git (for cloning the repo)  
+
+## Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/FranciscoGabriel1/netshow-hub.git
+cd netshow-hub
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Or with pnpm:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+git clone https://github.com/FranciscoGabriel1/netshow-hub.git
+cd netshow-hub
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Install Emotion dependencies (required by MUI v5):
 
-## Learn More
+```bash
+npm install @emotion/react @emotion/styled
+```
 
-To learn more about Next.js, take a look at the following resources:
+Or with pnpm:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm add @emotion/react @emotion/styled
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## JSON-Server Setup
 
-## Deploy on Vercel
+The `json-server` provides the following endpoints.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+1. Ensure `db.json` is present in the project root.  
+2. Start the JSON-Server:
+
+   ```bash
+   npm run api
+   ```
+
+   Or with pnpm:
+
+   ```bash
+   pnpm api
+   ```
+
+Access the API at `http://localhost:3000`:
+
+- `http://localhost:3000/videos`  
+- `http://localhost:3000/videos?_page=1&_per_page=10`  
+- `http://localhost:3000/videos/:id`  
+- `http://localhost:3000/categories`  
+- `http://localhost:3000/sites`  
+
+## Environment Configuration
+
+By default, the application points to `http://localhost:3000` as the base URL for API calls. If you need to change this, edit:
+
+```ts
+// src/services/httpClient.ts
+export const httpClient = new HttpClient('http://localhost:3000');
+```
+
+## Development Server
+
+1. Ensure JSON-Server is running.  
+2. In a separate terminal, start Next.js in development mode:
+
+   ```bash
+   npm run dev
+   ```
+
+   Or with pnpm:
+
+   ```bash
+   pnpm dev
+   ```
+
+3. Open `http://localhost:3002` in your browser.
+
+## Production Build
+
+1. Build the Next.js application:
+
+   ```bash
+   npm run build
+   ```
+
+   Or with pnpm:
+
+   ```bash
+   pnpm build
+   ```
+
+2. Start the production server:
+
+   ```bash
+   npm run start
+   ```
+
+   Or with pnpm:
+
+   ```bash
+   pnpm start
+   ```
+
+3. Open `http://localhost:3002` in your browser.
+
+
+## Available Scripts
+
+```jsonc
+{
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "lint": "next lint",
+    "api": "json-server db.json --port 3000",
+    "test": "jest"
+  }
+}
+```
+
+- `npm run dev` (or `pnpm dev`): Start Next.js in development mode on port 3002.  
+- `npm run api` (or `pnpm api`): Start JSON-Server on port 3000.  
+- `npm run build` (or `pnpm build`): Build Next.js for production.  
+- `npm run start` (or `pnpm start`): Start Next.js production server on port 3002.  
+- `npm run lint` (or `pnpm lint`): Run ESLint and type-check.  
+- `npm run test` (or `pnpm test`): Run Jest unit tests.
+
+## Testing
+
+**Unit Tests** with Jest & React Testing Library:  
+- Hooks: `useVideos`, `useCategories`, `useSnackbar`.  
+- Services: `videoService` (mocking `httpClient`).  
+- Components: `VideoCard`, `ClientVideoDetail`.  
+
+```bash
+npm run test
+```
+
+Or with pnpm:
+
+```bash
+pnpm test
+```
+
+## Contribution
+
+1. Fork the repository.  
+2. Create a new branch:  
+   ```bash
+   git checkout -b feature/your-feature
+   ```  
+3. Make your changes with clear, concise commits.  
+4. Push to your fork and open a Pull Request describing the changes.
+
