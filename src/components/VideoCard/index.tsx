@@ -1,7 +1,6 @@
-'use client'; 
-
+'use client';
 import React from 'react';
-import { useRouter } from 'next/navigation'; 
+import { useRouter } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -22,7 +21,7 @@ interface VideoCardProps {
 
 export function VideoCard({ id, title, thumbnail, category, chip }: VideoCardProps) {
   const theme = useTheme();
-  const router = useRouter(); 
+  const router = useRouter();
 
   const handleClick = () => {
     router.push(`/videos/${id}`);
@@ -45,7 +44,7 @@ export function VideoCard({ id, title, thumbnail, category, chip }: VideoCardPro
     <Card
       onClick={handleClick}
       sx={{
-        width: 320,
+        width: '100%',
         bgcolor: theme.palette.background.paper,
         borderRadius: 3,
         boxShadow: '0 2px 8px rgba(0,0,0,0.16)',
@@ -140,6 +139,10 @@ export function VideoCard({ id, title, thumbnail, category, chip }: VideoCardPro
             mt: 0,
             mb: 0,
             fontFamily: theme.typography.fontFamily,
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
           }}
         >
           {title}
